@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+sqlalchemy = "*"
+envparse = "*"
+psycopg2-binary = "*"
+asyncpg = "*"
+alembic = "*"
+pydantic = {version = "*", extras = ["email"]}
+base = "*"
+pytest = "*"
+httpx = "*"
+pytest-asyncio = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"

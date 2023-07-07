@@ -1,0 +1,6 @@
+public and secret key created and signed.
+
+pub   rsa3072 2023-07-05 [SC] [expires: 2025-07-04]
+      548215B9C7B4733327A8DCF13C60B09072585036
+uid                      nikita <nikitakhomiuk@gmail.com>
+sub   rsa3072 2023-07-05 [E] [expires: 2025-07-04]
