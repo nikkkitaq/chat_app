@@ -16,6 +16,7 @@ base = "*"
 pytest = "*"
 httpx = "*"
 pytest-asyncio = "*"
+pre-commit = "*"
 
 [dev-packages]
 
