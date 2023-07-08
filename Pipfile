@@ -17,6 +17,10 @@ pytest = "*"
 httpx = "*"
 pytest-asyncio = "*"
 pre-commit = "*"
+python-jose = "*"
+passlib = "*"
+python-multipart = "*"
+bcrypt = "*"
 
 [dev-packages]
 
