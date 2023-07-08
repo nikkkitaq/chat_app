@@ -3,7 +3,10 @@ import uuid
 from typing import Optional
 
 from fastapi import HTTPException
-from pydantic import BaseModel, EmailStr, validator, constr
+from pydantic import BaseModel
+from pydantic import constr
+from pydantic import EmailStr
+from pydantic import validator
 
 LETTER_MATCH_PATTERN = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
 
@@ -52,4 +55,3 @@ class UpdatedUserRequest(BaseModel):
                 status_code=422, detail="Name should contains only letters"
             )
         return value
-

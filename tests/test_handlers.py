@@ -2,10 +2,7 @@ import json
 
 
 async def test_create_user(client, get_user_from_database):
-    user_data = {
-        "name": "Batya",
-        "email": "test@1488.com"
-    }
+    user_data = {"name": "Batya", "email": "test@1488.com"}
     resp = client.post("/user/", data=json.dumps(user_data))
     data_from_resp = resp.json()
     assert resp.status_code == 200
