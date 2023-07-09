@@ -1,6 +1,7 @@
 from logging import getLogger
 from typing import Optional
 from uuid import UUID
+from hashing import Hasher
 
 from fastapi import APIRouter
 from fastapi import Depends
@@ -27,7 +28,10 @@ async def _create_new_user(
     async with db as session:
         async with session.begin():
             user_dal = UserDAL(session)
-            user = await user_dal.create_user(name=body.name, email=body.email)
+            user = await user_dal.create_user(
+                name=body.name,
+                email=body.email,
+                hashed_password=Hasher.get_password_hash(body.password))
             return ShowUser(
                 user_id=user.user_id,
                 name=user.name,
