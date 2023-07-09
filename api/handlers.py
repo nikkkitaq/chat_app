@@ -1,7 +1,6 @@
 from logging import getLogger
 from typing import Optional
 from uuid import UUID
-from hashing import Hasher
 
 from fastapi import APIRouter
 from fastapi import Depends
@@ -16,6 +15,7 @@ from api.models import UpdatedUserResponse
 from api.models import UserCreate
 from db.dals import UserDAL
 from db.session import get_db
+from hashing import Hasher
 
 logger = getLogger(__name__)
 
@@ -31,7 +31,8 @@ async def _create_new_user(
             user = await user_dal.create_user(
                 name=body.name,
                 email=body.email,
-                hashed_password=Hasher.get_password_hash(body.password))
+                hashed_password=Hasher.get_password_hash(body.password),
+            )
             return ShowUser(
                 user_id=user.user_id,
                 name=user.name,
@@ -113,7 +114,7 @@ async def get_user_by_id(user_id: UUID, db: AsyncSession = Depends(get_db)) -> S
 async def update_user_by_id(
     user_id: UUID, body: UpdatedUserRequest, db: AsyncSession = Depends(get_db)
 ) -> UpdatedUserResponse:
-    updated_user_params = body.dict(exclude_none=True)
+    updated_user_params = body.model_dump(exclude_none=True)
     if updated_user_params == {}:
         raise HTTPException(
             status_code=422,
