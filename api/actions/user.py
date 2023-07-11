@@ -6,7 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.models import ShowUser
 from api.models import UserCreate
+from db.dals import PortalRole
 from db.dals import UserDAL
+from db.models import User
 from db.session import get_db
 from hashing import Hasher
 
@@ -20,6 +22,7 @@ async def _create_new_user(
             name=body.name,
             email=body.email,
             hashed_password=Hasher.get_password_hash(body.password),
+            roles=[PortalRole.ROLE_PORTAL_USER],
         )
         return ShowUser(
             user_id=user.user_id,
@@ -51,14 +54,29 @@ async def _update_user(
 
 async def _get_user_by_id(
     user_id: UUID, session: AsyncSession = Depends(get_db)
-) -> Optional[ShowUser]:
+) -> Optional[User]:
     async with session.begin():
         user_dal = UserDAL(session)
         user = await user_dal.get_user_by_id(user_id=user_id)
         if user is not None:
-            return ShowUser(
-                user_id=user_id,
-                name=user.name,
-                email=user.email,
-                is_active=user.is_active,
-            )
+            return user
+
+
+def check_user_permission(target_user: User, current_user: User) -> bool:
+    if target_user.user_id != target_user.user_id:
+        if not {
+            PortalRole.ROLE_PORTAL_ADMIN,
+            PortalRole.ROLE_PORTAL_SUPERADMIN,
+        }.intersection(current_user.roles):
+            return False
+        if (
+            PortalRole.ROLE_PORTAL_SUPERADMIN in target_user.roles
+            and PortalRole.ROLE_PORTAL_ADMIN in current_user.roles
+        ):
+            return False
+        if (
+            PortalRole.ROLE_PORTAL_ADMIN in target_user.roles
+            and PortalRole.ROLE_PORTAL_ADMIN in current_user.roles
+        ):
+            return False
+    return True
