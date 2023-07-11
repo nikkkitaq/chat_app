@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional
 from uuid import UUID
 
@@ -9,12 +10,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.models import User
 
 
+class PortalRole(str, Enum):
+    ROLE_PORTAL_USER = "ROLE_PORTAL_USER"
+    ROLE_PORTAL_ADMIN = "ROLE_PORTAL_ADMIN"
+    ROLE_PORTAL_SUPERADMIN = "ROLE_PORTAL_SUPERADMIN"
+
+
 class UserDAL:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def create_user(self, name: str, email: str, hashed_password: str) -> User:
-        new_user = User(name=name, email=email, hashed_password=hashed_password)
+    async def create_user(
+        self, name: str, email: str, hashed_password: str, roles: list[PortalRole]
+    ) -> User:
+        new_user = User(
+            name=name, email=email, hashed_password=hashed_password, roles=roles
+        )
         self.db_session.add(new_user)
         await self.db_session.flush()
         return new_user
