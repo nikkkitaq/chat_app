@@ -64,7 +64,7 @@ async def _get_user_by_id(
 
 def check_user_permission(target_user: User, current_user: User) -> bool:
     if target_user.user_id != target_user.user_id:
-        if not {
+        if not {  # maybe this shit is wrong
             PortalRole.ROLE_PORTAL_ADMIN,
             PortalRole.ROLE_PORTAL_SUPERADMIN,
         }.intersection(current_user.roles):

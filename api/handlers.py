@@ -44,14 +44,14 @@ async def delete_user(
     current_user: User = Depends(get_current_user_from_token),
 ) -> DeleteUserResponse:
     user_for_deletion = await _get_user_by_id(user_id, session)
-    if user_for_deletion is None:
-        raise HTTPException(
-            status_code=404, detail=f"User with id {user_id} not found."
-        )
     if not check_user_permission(
         target_user=user_for_deletion, current_user=current_user
     ):
         raise HTTPException(status_code=403, detail="Forbidden.")
+    if user_for_deletion is None:
+        raise HTTPException(
+            status_code=404, detail=f"User with id {user_id} not found."
+        )
     deleted_user_id = await _delete_user(user_id, session)
     if deleted_user_id is None:
         raise HTTPException(
@@ -92,7 +92,7 @@ async def update_user_by_id(
         raise HTTPException(
             status_code=404, detail=f"User with id {user_id} not found."
         )
-    if not check_user_permission(
+    if check_user_permission(  # check this shit (incorrect working)
         target_user=user_for_update, current_user=current_user
     ):
         raise HTTPException(status_code=403, detail="Forbidden.")
