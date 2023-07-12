@@ -2,12 +2,13 @@ from typing import Optional
 from uuid import UUID
 
 from fastapi import Depends
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.models import ShowUser
 from api.models import UserCreate
-from db.dals import PortalRole
 from db.dals import UserDAL
+from db.models import PortalRole
 from db.models import User
 from db.session import get_db
 from hashing import Hasher
@@ -63,7 +64,11 @@ async def _get_user_by_id(
 
 
 def check_user_permission(target_user: User, current_user: User) -> bool:
-    if target_user.user_id != target_user.user_id:
+    if PortalRole.ROLE_PORTAL_SUPERADMIN in current_user.roles:
+        raise HTTPException(
+            status_code=406, detail="Superadmin cannot be deleted via API."
+        )
+    if target_user.user_id != current_user.user_id:
         if not {  # maybe this shit is wrong
             PortalRole.ROLE_PORTAL_ADMIN,
             PortalRole.ROLE_PORTAL_SUPERADMIN,
