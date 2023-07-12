@@ -111,7 +111,7 @@ async def revoke_admin_privilege(
     if not user_for_revoke_admin_privileges.is_admin:
         raise HTTPException(
             status_code=409,
-            detail=f"User with id {user_id} already promoted to admin/superadmin.",
+            detail=f"User with id {user_id} has no admin privileges.",
         )
     if user_for_revoke_admin_privileges is None:
         raise HTTPException(
